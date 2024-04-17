@@ -45,7 +45,7 @@ function SuggestBar() {
           }
         }
       }}>
-        <Typography sx={{ opacity: '0.7' }}>Suggested for you</Typography>
+        <Typography sx={{ opacity: '0.7' }}>Suggested Users</Typography>
         <Typography variant='caption' sx={{ cursor: 'pointer', color: '#03a9f4', fontWeight: 'medium' }}>See all</Typography>
       </Box>
       <Box sx={{

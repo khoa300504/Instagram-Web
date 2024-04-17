@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { ReactComponent as InstagramTitle } from '~/assets/instagramTitle.svg'
 import { ReactComponent as MessengerIcon } from '~/assets/messenger.svg'
@@ -12,6 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 import MenuIcon from '@mui/icons-material/Menu'
+import Link from '@mui/material/Link'
 
 const chipSx = {
   background: '#fff',
@@ -80,9 +81,11 @@ function AppBar() {
         backgroundColor: { xs: '#ccc', sm: 'transparent' }
       }}
       >
-        <Box sx={boxFuncSx}>
-          <Chip icon={<HomeIcon/>} label="Home" sx={chipSx} />
-        </Box>
+        <Link href="/">
+          <Box sx={boxFuncSx}>
+            <Chip icon={<HomeIcon/>} label="Home" sx={chipSx} />
+          </Box>
+        </Link>
         <Box sx={boxFuncSx}>
           <Chip icon={<SearchIcon />} label="Search" sx={chipSx} />
         </Box>
@@ -102,9 +105,11 @@ function AppBar() {
         <Box sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
-        <Box sx={boxFuncSx}>
-          <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
-        </Box>
+        <Link href="/:username">
+          <Box sx={boxFuncSx}>
+            <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
+          </Box>
+        </Link>
       </Box>
       <Box>
         <Box sx={{ cursor: 'pointer',
