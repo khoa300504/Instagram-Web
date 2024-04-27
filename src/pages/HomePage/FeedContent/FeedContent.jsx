@@ -9,7 +9,8 @@ function FeedContent({ user }) {
 
   return (
     <Box sx={{
-      width: { sx: '500px', sm: '900px' }
+      width: { sx: '500px', sm: '900px' },
+      marginTop: '0 !important'
     }}>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <AvatarGroup max={ 5 } sx={{ margin: '20px 0 0 0', gap: 5, justifyContent: 'center', '& .MuiAvatar-root': { borderColor: '#c62828', border: '3px solid #ff9800' } }}>
@@ -43,7 +44,7 @@ function FeedContent({ user }) {
       >
         {
           user?.posts?.map(post =>
-            <Post key={post?._id} post={post} user={user} />
+            <Post key={post?._id} post={post} user={user} currentFile={'feed'} />
           )
         }
       </Stack>

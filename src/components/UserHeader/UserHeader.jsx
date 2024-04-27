@@ -7,10 +7,13 @@ import SettingsIcon from '@mui/icons-material/Settings'
 
 function UserHeader({ user }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '50px', width: '65%', gap: '200px' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '50px', width: '65%', gap: '200px', justifyContent: 'space-between' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
         <Box>
-          <Avatar alt="Remy Sharp" sx={{ width: '150px', height: '150px' }} src={user?.avtImg} />
+          { user?.avtImg
+            ? <Avatar alt="Remy Sharp" sx={{ width: '150px', height: '150px' }} src={user?.avtImg} />
+            : <Avatar alt="Remy Sharp" sx={{ width: '150px', height: '150px' }} src='' />
+          }
         </Box>
         <Box>
           <SettingsIcon sx={{ cursor: 'pointer' }} />

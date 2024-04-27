@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import { ReactComponent as InstagramTitle } from '~/assets/instagramTitle.svg'
 import { ReactComponent as MessengerIcon } from '~/assets/messenger.svg'
@@ -11,8 +11,14 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
-import MenuIcon from '@mui/icons-material/Menu'
 import Link from '@mui/material/Link'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import SettingsIcon from '@mui/icons-material/Settings'
+import LogoutIcon from '@mui/icons-material/Logout'
+import MenuIcon from '@mui/icons-material/Menu'
+import ModeToggle from '~/components/ModeSelect/ModeSelect'
 
 const chipSx = {
   background: '#fff',
@@ -46,6 +52,15 @@ const boxFuncSx = {
 }
 
 function AppBar() {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <Box sx={{
       width: { xs: 'auto', sm: '140px', md: '230px' },
@@ -81,7 +96,7 @@ function AppBar() {
         backgroundColor: { xs: '#ccc', sm: 'transparent' }
       }}
       >
-        <Link href="/">
+        <Link href="/feed">
           <Box sx={boxFuncSx}>
             <Chip icon={<HomeIcon/>} label="Home" sx={chipSx} />
           </Box>
@@ -105,22 +120,49 @@ function AppBar() {
         <Box sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
-        <Link href="/:username">
+        <Link href="/profile">
           <Box sx={boxFuncSx}>
             <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
           </Box>
         </Link>
       </Box>
-      <Box>
+      <Box >
         <Box sx={{ cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: '#f5f5f5'
-          },
+          width: '211.89px',
           padding: '8px 0',
           fontWeight: 'medium',
           display: { xs: 'none', sm: 'flex' }
         }}>
-          <Chip icon={<MenuIcon fontSize='large' />} label="More" sx={chipSx} />
+          <Button
+            id="more-button"
+            aria-controls={open ? 'more-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            sx={{ gap: 2, color: '#000' }}
+          >
+            <MenuIcon/>
+            More
+          </Button>
+          <Menu
+            id="more-menu"
+            aria-labelledby="more-button"
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={null} sx={{ display: 'flex', justifyContent: 'center' }}><ModeToggle/></MenuItem>
+            <MenuItem sx={{ gap: 5 }} onClick={handleClose}><SettingsIcon/> Setting</MenuItem>
+            <MenuItem sx={{ gap: 5 }} onClick={handleLogout}><LogoutIcon/> Logout</MenuItem>
+          </Menu>
         </Box>
       </Box>
     </Box>

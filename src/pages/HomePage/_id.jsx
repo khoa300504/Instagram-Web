@@ -15,7 +15,7 @@ function HomePage() {
     >
       <AppBar/>
       <Divider orientation="vertical" variant="middle" flexItem sx={{ display: { xs: 'none', sm: 'flex' } }} />
-      <FeedContent user = {mockData?.user} />
+      <FeedContent user = {mockData?.user}/>
       <SuggestBar/>
       <TempBar/>
     </Stack>

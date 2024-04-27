@@ -1,8 +1,8 @@
 import React from 'react'
 import UserHeader from '~/components/UserHeader/UserHeader'
-import UserPost from '~/components/UserPost/UserPost'
+import UserPost from '~/pages/UserPage/UserInfo/UserPost/UserPost'
 import Box from '@mui/material/Box'
-import { mapOrder } from '~/util/sort'
+import { mapOrder } from '~/utils/sort'
 
 function UserInfo({ user }) {
   user.posts = mapOrder(user?.posts, user?.postOrderIds, user?._id)

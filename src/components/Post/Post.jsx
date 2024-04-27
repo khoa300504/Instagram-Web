@@ -5,21 +5,23 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
-import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 import IconButton from '@mui/material/IconButton'
-import TurnedInNotIcon from '@mui/icons-material/TurnedInNot'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
+import SpeakerNotesOffIcon from '@mui/icons-material/SpeakerNotesOff'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import FlagIcon from '@mui/icons-material/Flag'
+import DeleteIcon from '@mui/icons-material/Delete'
+import PushPinIcon from '@mui/icons-material/PushPin'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
 
-function Post({ post, user }) {
+function Post({ post, user, currentFile }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -27,6 +29,16 @@ function Post({ post, user }) {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const [like, setLike] = useState(false)
+  const [save, setSave] = useState(false)
+
+  const toggleLike = () => {
+    setLike(!like)
+  }
+  const toggleSave = () => {
+    setSave(!save)
   }
 
   return (
@@ -49,6 +61,7 @@ function Post({ post, user }) {
           >
             <MoreHorizIcon />
           </IconButton>
+          {currentFile === 'feed' &&
           <Menu
             id="post-menu"
             MenuListProps={{
@@ -59,10 +72,6 @@ function Post({ post, user }) {
             onClose={handleClose}
           >
             <MenuItem onClick={handleClose} sx={{ gap: 2 }}>
-              <BookmarkIcon/>
-                  Save
-            </MenuItem>
-            <MenuItem onClick={handleClose} sx={{ gap: 2 }}>
               <VisibilityOffIcon/>
                   Hidden
             </MenuItem>
@@ -71,6 +80,31 @@ function Post({ post, user }) {
                   Report
             </MenuItem>
           </Menu>
+          }
+          {currentFile === 'userPost' &&
+          <Menu
+            id="post-menu"
+            MenuListProps={{
+              'aria-labelledby': 'post-button'
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose} sx={{ gap: 2 }}>
+              <PushPinIcon/>
+                  Pin
+            </MenuItem>
+            <MenuItem onClick={handleClose} sx={{ gap: 2 }}>
+              <DeleteIcon/>
+                  Delete
+            </MenuItem>
+            <MenuItem onClick={handleClose} sx={{ gap: 2 }}>
+              <SpeakerNotesOffIcon/>
+                  Off Comment
+            </MenuItem>
+          </Menu>
+          }
         </Box>
       }
       title={user.userName}
@@ -82,26 +116,25 @@ function Post({ post, user }) {
         alt="Paella dish"
       />
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <CardActions>
-          <IconButton aria-label="add to favorites">
-            <FavoriteBorderIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ChatBubbleOutlineIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <SendOutlinedIcon />
-          </IconButton>
-        </CardActions>
-        <CardActions>
-          <IconButton aria-label="share">
-            <TurnedInNotIcon />
-          </IconButton>
-        </CardActions>
+        <Box sx={{ display: 'flex', gap: 1, pt: 1, pb: 1 }}>
+          { like
+            ? <FavoriteIcon onClick={toggleLike} sx={{ cursor: 'pointer', color: '#e91e63' }} />
+            : <FavoriteBorderIcon onClick={toggleLike} sx={{ cursor: 'pointer', color: '#000' }} />
+          }
+          <ChatBubbleOutlineIcon sx={{ cursor: 'pointer' }} />
+          <SendOutlinedIcon sx={{ cursor: 'pointer' }} />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, pt: 1, pb: 1 }}>
+          { save
+            ? <BookmarkIcon onClick={toggleSave} sx={{ cursor: 'pointer' }} />
+            : <BookmarkBorderIcon onClick={toggleSave} sx={{ cursor: 'pointer' }} />
+          }
+        </Box>
       </Box>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">{post?.title}</Typography>
-      </CardContent>
+      <Box>
+        <Typography color="#7f8c8d">1000 likes</Typography>
+        <Typography variant="body2" color="#000">{post?.title}</Typography>
+      </Box>
     </Card>
   )
 }

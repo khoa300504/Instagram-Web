@@ -13,7 +13,7 @@ function UserPage() {
     }}>
       <AppBar/>
       <Divider orientation="vertical" variant="middle" flexItem />
-      <UserInfo user = {mockData?.user} />
+      <UserInfo user = {mockData?.user}/>
     </Box>
   )
 }
