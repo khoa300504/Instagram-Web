@@ -11,8 +11,8 @@ function App() {
   return (
     <Box>
       <Routes>
-        <Route index element={user ? <HomePage/> : <AuthPage/>} />
-        <Route path='/auth' element={user ? <AuthPage/> : <HomePage/>} />
+        <Route path='/' element={user ? <HomePage/> : <AuthPage/>} />
+        <Route path='/auth' element={!user ? <AuthPage/> : <HomePage/>} />
         <Route path='/profile' element={<UserPage/>} />
       </Routes>
     </Box>

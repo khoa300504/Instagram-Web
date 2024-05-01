@@ -8,13 +8,24 @@ import background from '~/images/authBackground2.jpg'
 import { useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 import authStateAtom from '~/atoms/authStateAtom'
+import { login } from '~/apis'
+import { toast } from 'react-toastify'
+import userAtom from '~/atoms/userAtom'
 
 function SignIn() {
   const setAuthState = useSetRecoilState(authStateAtom)
+  const setUser = useSetRecoilState(userAtom)
   const [inputs, setInputs] = useState({
     username: '',
     password: ''
   })
+
+  const handleLogin = async () => {
+    const result = await login(inputs)
+    toast.success('Successfully Login 😎')
+    localStorage.setItem('user-threads', JSON.stringify(result))
+    setUser(localStorage.getItem('user-threads'))
+  }
   return (
     <Box sx={{ backgroundImage: `url(${background})`,
       height: '100vh',
@@ -47,12 +58,13 @@ function SignIn() {
           alignItems: 'center',
           flexDirection: 'column',
           gap: 1,
-          '& input': { color: '#2c3e50' },
+          '& input': { color: '#000', padding: '10px 8px', width: '240px' },
           '& label.Mui-focused': {
-            color: '#000'
+            color: '#2980b9',
+            fontWeight: 'medium'
           },
           '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#95a5a6' }
+            '&.Mui-focused fieldset': { borderColor: '#3498db' }
           },
           '& .MuiButton-root': {
             backgroundColor: 'rgba(0, 0, 0, 1)',
@@ -63,19 +75,21 @@ function SignIn() {
             }
           }
         }}>
-          <TextField label="Username" variant="outlined" focused
-            onChange={(e) => {setInputs({ ...inputs, username: e.target.value })}}
+          <TextField label="Username*" variant="outlined" focused
+            onChange={(e) => {
+              setInputs({ ...inputs, username: e.target.value })
+            }}
             value={inputs.username}
           />
-          <TextField label="Password" type='password' variant="outlined" focused
+          <TextField label="Password*" type='password' variant="outlined" focused
             onChange={(e) => {setInputs({ ...inputs, password: e.target.value })}}
             value={inputs.password}
           />
-          <Button variant="contained">Register</Button>
+          <Button variant="contained" onClick={handleLogin}>Login</Button>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 1 }}>
-          <Typography sx={{ color: '#000' }}>Don&apos;t have account</Typography>
-          <Typography onClick={() => setAuthState('register')} sx={{ color: '#000', cursor: 'pointer', '&:hover': { color: '#0d47a1' } }}>Sign Up</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 0 }}>
+          <Typography sx={{ color: '#000', fontSize: '16px' }}>Don&apos;t have account?&nbsp;</Typography>
+          <Typography onClick={() => setAuthState('register')} sx={{ color: '#3498db', fontSize: '16px', cursor: 'pointer', '&:hover': { fontWeight: 'medium' } }}>Register</Typography>
         </Box>
       </Paper>
     </Box>

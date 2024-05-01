@@ -1,5 +1,3 @@
-import React from 'react'
-import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import AppBar from '~/components/AppBar/AppBar'
 import FeedContent from './FeedContent/FeedContent'

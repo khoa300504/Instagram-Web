@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import { ReactComponent as InstagramTitle } from '~/assets/instagramTitle.svg'
 import { ReactComponent as MessengerIcon } from '~/assets/messenger.svg'
@@ -19,6 +19,19 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import LogoutIcon from '@mui/icons-material/Logout'
 import MenuIcon from '@mui/icons-material/Menu'
 import ModeToggle from '~/components/ModeSelect/ModeSelect'
+import { useSetRecoilState } from 'recoil'
+import userAtom from '~/atoms/userAtom'
+import { Bounce, toast } from 'react-toastify'
+import { logout } from '~/apis/index'
+import authStateAtom from '~/atoms/authStateAtom'
+import { Link as RouterLink } from 'react-router-dom'
+import Modal from '@mui/material/Modal'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import Typography from '@mui/material/Typography'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import { styled } from '@mui/material/styles'
+import Avatar from '@mui/material/Avatar'
+import TextField from '@mui/material/TextField'
 
 const chipSx = {
   background: '#fff',
@@ -51,28 +64,77 @@ const boxFuncSx = {
   fontWeight: 'medium'
 }
 
+const ModalSx = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 830,
+  height: 450,
+  bgcolor: 'background.paper',
+  border: '1px solid transparent',
+  p: 2,
+  borderRadius: '20px'
+}
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1
+})
+
+
 function AppBar() {
+  const setAuthState = useSetRecoilState(authStateAtom)
+  const setUser = useSetRecoilState(userAtom)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
-  const handleClose = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null)
   }
+  const [openModal, setOpenModal] = useState(false)
+  const handleOpenPost = () => setOpenModal(!openModal)
+  const handleClosePost = () => {
+    setOpenModal(!openModal)
+    setFile(null)
+  }
+  const [file, setFile] = useState()
 
+  const handleLogout = async () => {
+    const result = await logout()
+    toast.success(result.message, {
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+      progress: undefined,
+      transition: Bounce
+    })
+    localStorage.removeItem('user-threads')
+    setAuthState('login')
+    setUser(null)
+  }
   return (
-    <Box sx={{
-      width: { xs: 'auto', sm: '140px', md: '230px' },
-      display: 'flex',
-      flexDirection: { xs: 'row', sm: 'column' },
-      padding: '8px 12px 8px 12px',
-      height: { xs: 'auto', sm: '100vh' },
-      position: 'sticky',
-      top: { xs: '', sm: '0px' },
-      bottom: { xs: '0px', sm: '' },
-      alignItems: { md: 'flex-start', xs: 'center' }
-    }}>
+    <Box
+      sx={{
+        width: { xs: 'auto', sm: '140px', md: '230px' },
+        display: 'flex',
+        flexDirection: { xs: 'row', sm: 'column' },
+        padding: '8px 12px 8px 12px',
+        height: { xs: 'auto', sm: '100vh' },
+        position: 'sticky',
+        top: { xs: '', sm: '0px' },
+        bottom: { xs: '0px', sm: '' },
+        alignItems: { md: 'flex-start', xs: 'center' }
+      }}>
       <Box>
         <SvgIcon component={InstagramTitle} inheritViewBox sx={{
           color: '#000',
@@ -96,7 +158,7 @@ function AppBar() {
         backgroundColor: { xs: '#ccc', sm: 'transparent' }
       }}
       >
-        <Link href="/feed">
+        <Link as={RouterLink} to={'/'}>
           <Box sx={boxFuncSx}>
             <Chip icon={<HomeIcon/>} label="Home" sx={chipSx} />
           </Box>
@@ -117,10 +179,10 @@ function AppBar() {
         <Box className="resIcon" sx={boxFuncSx}>
           <Chip icon={<FavoriteBorderIcon />} label="Notification" sx={chipSx} />
         </Box>
-        <Box sx={boxFuncSx}>
+        <Box onClick={handleOpenPost} sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
-        <Link href="/profile">
+        <Link as={RouterLink} to={'/profile'}>
           <Box sx={boxFuncSx}>
             <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
           </Box>
@@ -157,13 +219,79 @@ function AppBar() {
             }}
             anchorEl={anchorEl}
             open={open}
-            onClose={handleClose}
+            onClose={handleCloseMenu}
           >
             <MenuItem onClick={null} sx={{ display: 'flex', justifyContent: 'center' }}><ModeToggle/></MenuItem>
-            <MenuItem sx={{ gap: 5 }} onClick={handleClose}><SettingsIcon/> Setting</MenuItem>
+            <MenuItem sx={{ gap: 5 }} onClick={handleCloseMenu}><SettingsIcon/> Setting</MenuItem>
             <MenuItem sx={{ gap: 5 }} onClick={handleLogout}><LogoutIcon/> Logout</MenuItem>
           </Menu>
         </Box>
+      </Box>
+      {/* Modal Create Post */}
+      <Box>
+        <Modal
+          open={openModal}
+          onClose={handleClosePost}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={ModalSx}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <ArrowBackIcon sx={{ cursor: 'pointer' }}/>
+              <Typography sx={{ fontWeight: 'bold' }}>Create new post</Typography>
+              <Typography sx={{ cursor: 'pointer', fontWeight: 'medium', color: '#2196f3', '&:hover': { color: '#1976d2' } }}>Share</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Box sx={{ width: '65%', height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 1, borderRight: 1, borderColor: '#ccc' }}>
+                {file
+                  ? <Box sx={{ background: `url(${file})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%' }}/>
+                  : <Button
+                    component="label"
+                    role={undefined}
+                    tabIndex={-1}
+                    startIcon={<FileUploadIcon />}
+                  >
+                    Upload Image
+                    <VisuallyHiddenInput type="file" onChange={(e) => {
+                      setFile(URL.createObjectURL(e.target.files[0]))
+                    }}/></Button>
+                }
+              </Box>
+              <Box sx={{ borderTop: 1, width: '35%', borderColor: '#ccc', justifyContent: 'flex-start', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', p: 1, alignItems: 'center', gap: 2 }}>
+                  <Avatar sx={{ width: '32px', height: '32px' }} src='https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/0da80c00d396748e93fdece8fcadaf74.jpg?alt=media&token=4d4c7a3f-c3cf-4381-9c59-b4b8cda31fc3'/>
+                  <Typography variant='subtitle2' sx={{ fontSize: '14px' }}>Scarlett.04</Typography>
+                </Box>
+                <Box sx={{ '& .MuiFormLabel-root': { justifyContent: 'center' } }}>
+                  <Typography>Main Content</Typography>
+                  <TextField sx={{ overflowY: 'auto' }}
+                    id="standard-multiline-static"
+                    multiline
+                    rows={5}
+                    variant="outlined"
+                    focused
+                  />
+                </Box>
+                {
+                  file
+                    ? <Box>
+                      <Button
+                        component="label"
+                        role={undefined}
+                        tabIndex={-1}
+                        startIcon={<FileUploadIcon />}
+                      >
+                        Change Image
+                        <VisuallyHiddenInput type="file" onChange={(e) => {
+                          setFile(URL.createObjectURL(e.target.files[0]))
+                        }}/></Button>
+                    </Box>
+                    : <Box></Box>
+                }
+              </Box>
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </Box>
   )

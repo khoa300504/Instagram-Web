@@ -10,9 +10,11 @@ import { Bounce, toast } from 'react-toastify'
 import { createNewUser } from '~/apis'
 import { useSetRecoilState } from 'recoil'
 import authStateAtom from '~/atoms/authStateAtom'
+import userAtom from '~/atoms/userAtom'
 
 function SignUp() {
   const setAuthState = useSetRecoilState(authStateAtom)
+  const setUserState = useSetRecoilState(userAtom)
   const [inputs, setInputs] = useState({
     displayName: '',
     username: '',
@@ -24,12 +26,12 @@ function SignUp() {
     toast.info('Successfully register 😎', {
       hideProgressBar: false,
       closeOnClick: true,
-      pauseOnHover: true,
       draggable: true,
       progress: undefined,
       transition: Bounce
     })
     localStorage.setItem('user-threads', JSON.stringify(user))
+    setUserState(JSON.parse(localStorage.getItem('user-threads')))
   }
 
   return (
@@ -64,12 +66,13 @@ function SignUp() {
           alignItems: 'center',
           flexDirection: 'column',
           gap: 1,
-          '& input': { color: '#2c3e50' },
+          '& input': { color: '#000', padding: '10px 8px', width: '240px' },
           '& label.Mui-focused': {
-            color: '#000'
+            color: '#2980b9',
+            fontWeight: 'medium'
           },
           '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': { borderColor: '#95a5a6' }
+            '&.Mui-focused fieldset': { borderColor: '#3498db' }
           },
           '& .MuiButton-root': {
             backgroundColor: 'rgba(0, 0, 0, 1)',
@@ -98,9 +101,9 @@ function SignUp() {
           />
           <Button variant="contained" onClick={handleSignUp}>Register</Button>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 1 }}>
-          <Typography sx={{ color: '#000' }}>Already have account</Typography>
-          <Typography onClick={() => setAuthState('login')} sx={{ color: '#000', cursor: 'pointer', '&:hover': { color: '#0d47a1' } }}>Sign Up</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 0 }}>
+          <Typography sx={{ color: '#000', fontSize: '16px' }}>Already have account?&nbsp;</Typography>
+          <Typography onClick={() => setAuthState('login')} sx={{ color: '#3498db', fontSize: '16px', cursor: 'pointer', '&:hover': { fontWeight: 'medium' } }}>Login</Typography>
         </Box>
       </Paper>
     </Box>
