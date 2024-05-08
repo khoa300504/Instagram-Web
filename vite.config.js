@@ -10,4 +10,14 @@ export default defineConfig({
       { find: '~', replacement: '/src' }
     ]
   }
+  // server: {
+  //   port: 3000,
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:8017',
+  //       changeOrigin: true,
+  //       secure: false
+  //     }
+  //   }
+  // }
 })

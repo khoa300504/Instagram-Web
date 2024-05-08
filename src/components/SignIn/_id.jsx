@@ -82,7 +82,9 @@ function SignIn() {
             value={inputs.username}
           />
           <TextField label="Password*" type='password' variant="outlined" focused
-            onChange={(e) => {setInputs({ ...inputs, password: e.target.value })}}
+            onChange={(e) => {
+              setInputs({ ...inputs, password: e.target.value })
+            }}
             value={inputs.password}
           />
           <Button variant="contained" onClick={handleLogin}>Login</Button>

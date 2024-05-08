@@ -21,7 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import ModeToggle from '~/components/ModeSelect/ModeSelect'
 import { useSetRecoilState } from 'recoil'
 import userAtom from '~/atoms/userAtom'
-import { Bounce, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { logout } from '~/apis/index'
 import authStateAtom from '~/atoms/authStateAtom'
 import { Link as RouterLink } from 'react-router-dom'
@@ -32,6 +32,10 @@ import FileUploadIcon from '@mui/icons-material/FileUpload'
 import { styled } from '@mui/material/styles'
 import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
+import Divider from '@mui/material/Divider'
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges'
+import usePreviewImg from '~/hooks/usePreviewImg'
+import { useConfirm } from 'material-ui-confirm'
 
 const chipSx = {
   background: '#fff',
@@ -90,34 +94,57 @@ const VisuallyHiddenInput = styled('input')({
 })
 
 
-function AppBar() {
+function AppBar({ handleCreatePost }) {
   const setAuthState = useSetRecoilState(authStateAtom)
   const setUser = useSetRecoilState(userAtom)
+
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
+  const confirm = useConfirm()
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
   const handleCloseMenu = () => {
     setAnchorEl(null)
   }
+
   const [openModal, setOpenModal] = useState(false)
-  const handleOpenPost = () => setOpenModal(!openModal)
-  const handleClosePost = () => {
-    setOpenModal(!openModal)
-    setFile(null)
+  const handleOpenModal = () => setOpenModal(!openModal)
+  const handleCloseModal = () => {
+    confirm({
+      title: 'Discard post?',
+      // eslint-disable-next-line quotes
+      description: "If you leave, your edits won't be saved.",
+      confirmationText: 'Discard',
+
+      allowClose: false,
+      dialogProps: { maxWidth: 'xs' },
+      cancellationButtonProps: { color: 'inherit' },
+      confirmationButtonProps: { color: 'error' }
+    })
+      .then(() => {
+        setOpenModal(!openModal)
+      })
+      .catch(() => {})
   }
-  const [file, setFile] = useState()
+  const [description, setDescription] = useState('')
+  const imgRef = useRef(null)
+  const { handleImgChange, handleAfterShare, postPic } = usePreviewImg()
+
+  const handleShare = () => {
+    const postData = {
+      description,
+      postPic
+    }
+    handleAfterShare()
+    setDescription('')
+    // handleCreatePost(postData)
+    setOpenModal(!openModal)
+  }
 
   const handleLogout = async () => {
     const result = await logout()
-    toast.success(result.message, {
-      hideProgressBar: false,
-      closeOnClick: true,
-      draggable: true,
-      progress: undefined,
-      transition: Bounce
-    })
+    toast.success(result.message)
     localStorage.removeItem('user-threads')
     setAuthState('login')
     setUser(null)
@@ -179,7 +206,7 @@ function AppBar() {
         <Box className="resIcon" sx={boxFuncSx}>
           <Chip icon={<FavoriteBorderIcon />} label="Notification" sx={chipSx} />
         </Box>
-        <Box onClick={handleOpenPost} sx={boxFuncSx}>
+        <Box onClick={handleOpenModal} sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
         <Link as={RouterLink} to={'/profile'}>
@@ -231,7 +258,7 @@ function AppBar() {
       <Box>
         <Modal
           open={openModal}
-          onClose={handleClosePost}
+          onClose={handleCloseModal}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
@@ -239,12 +266,28 @@ function AppBar() {
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <ArrowBackIcon sx={{ cursor: 'pointer' }}/>
               <Typography sx={{ fontWeight: 'bold' }}>Create new post</Typography>
-              <Typography sx={{ cursor: 'pointer', fontWeight: 'medium', color: '#2196f3', '&:hover': { color: '#1976d2' } }}>Share</Typography>
+              <Typography sx={{
+                cursor: 'pointer',
+                fontWeight: 'medium',
+                color: '#2196f3',
+                '&:hover': { color: '#1976d2' }
+              }}
+              onClick={handleShare}
+              >Share</Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box sx={{ width: '65%', height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 1, borderRight: 1, borderColor: '#ccc' }}>
-                {file
-                  ? <Box sx={{ background: `url(${file})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%' }}/>
+              <Box sx={{
+                width: '65%',
+                height: 400,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTop: 1,
+                borderRight: 1,
+                borderColor: '#ccc'
+              }}>
+                {postPic
+                  ? <Box sx={{ backgroundImage:`url(${postPic})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%' }}/>
                   : <Button
                     component="label"
                     role={undefined}
@@ -252,39 +295,61 @@ function AppBar() {
                     startIcon={<FileUploadIcon />}
                   >
                     Upload Image
-                    <VisuallyHiddenInput type="file" onChange={(e) => {
-                      setFile(URL.createObjectURL(e.target.files[0]))
-                    }}/></Button>
+                    <VisuallyHiddenInput type="file" onChange={handleImgChange} ref={imgRef}/>
+                  </Button>
                 }
               </Box>
-              <Box sx={{ borderTop: 1, width: '35%', borderColor: '#ccc', justifyContent: 'flex-start', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Box sx={{ display: 'flex', p: 1, alignItems: 'center', gap: 2 }}>
-                  <Avatar sx={{ width: '32px', height: '32px' }} src='https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/0da80c00d396748e93fdece8fcadaf74.jpg?alt=media&token=4d4c7a3f-c3cf-4381-9c59-b4b8cda31fc3'/>
-                  <Typography variant='subtitle2' sx={{ fontSize: '14px' }}>Scarlett.04</Typography>
+              <Box sx={{
+                borderTop: 1, width: '35%',
+                borderColor: '#ccc',
+                justifyContent: 'flex-start',
+                display: 'flex',
+                flexDirection: 'column',
+                pt: 2,
+                pl: 2,
+                gap: 1
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar sx={{ width: '32px', height: '32px' }} src='' />
+                  <Typography variant='subtitle2' sx={{ fontSize: '14px', fontFamily: 'Roboto Mono' }}>Scarlett.04</Typography>
                 </Box>
-                <Box sx={{ '& .MuiFormLabel-root': { justifyContent: 'center' } }}>
-                  <Typography>Main Content</Typography>
-                  <TextField sx={{ overflowY: 'auto' }}
+                <Box sx={{
+                  width: '100%',
+                  '& .MuiFormLabel-root': { justifyContent: 'center' },
+                  '& .MuiInputBase-root': { p: 0 },
+                  '& .MuiFormControl-root': { width: '100%' },
+                  '& .MuiOutlinedInput-root': {
+                    fontSize: '16px',
+                    color: '#000',
+                    fontFamily: 'Roboto Mono',
+                    fontWeight: 'regular',
+                    '&.Mui-focused fieldset': { borderColor: 'transparent' } }
+                }}>
+                  <TextField
                     id="standard-multiline-static"
                     multiline
-                    rows={5}
+                    placeholder="Write a caption..."
+                    rows={7}
                     variant="outlined"
                     focused
+                    onChange={(e) => {
+                      setDescription(e.target.value)
+                    }}
+                    value={description}
                   />
                 </Box>
+                <Divider orientation="horizontal" variant="middle" flexItem sx={{ display: { xs: 'none', sm: 'flex' } }} />
                 {
-                  file
-                    ? <Box>
+                  postPic
+                    ? <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                       <Button
                         component="label"
                         role={undefined}
                         tabIndex={-1}
-                        startIcon={<FileUploadIcon />}
+                        startIcon={<PublishedWithChangesIcon />}
                       >
                         Change Image
-                        <VisuallyHiddenInput type="file" onChange={(e) => {
-                          setFile(URL.createObjectURL(e.target.files[0]))
-                        }}/></Button>
+                        <VisuallyHiddenInput type="file" onChange={handleImgChange}/></Button>
                     </Box>
                     : <Box></Box>
                 }

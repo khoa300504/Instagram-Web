@@ -10,6 +10,15 @@ const theme = extendTheme({
     },
     dark: {
     }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none'
+        }
+      }
+    }
   }
   // ...other properties
 })

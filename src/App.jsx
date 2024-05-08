@@ -5,6 +5,18 @@ import Box from '@mui/material/Box'
 import AuthPage from '~/pages/AuthPage/_id'
 import { useRecoilValue } from 'recoil'
 import userAtom from '~/atoms/userAtom'
+import firebase from 'firebase/compat/app'
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyC19JiuyfTNXNPYNrOzISAWA8myHil4oao',
+  authDomain: 'bookingticketapp-4194d.firebaseapp.com',
+  databaseURL: 'https://bookingticketapp-4194d-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'bookingticketapp-4194d',
+  storageBucket: 'bookingticketapp-4194d.appspot.com',
+  messagingSenderId: '445576866253',
+  appId: '1:445576866253:web:a1e2c57fa3b410c1803c84'
+}
+firebase.initializeApp(firebaseConfig)
 
 function App() {
   const user = useRecoilValue(userAtom)

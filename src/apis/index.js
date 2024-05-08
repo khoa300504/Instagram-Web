@@ -12,6 +12,8 @@ axios.interceptors.response.use(
   }
 )
 
+axios.defaults.withCredentials = true
+
 export const createNewUser = async (userInfo) => {
   const response = await axios.post(`${API_ROOT}/v1/users/signup`, userInfo)
   return response.data
@@ -24,6 +26,11 @@ export const logout = async () => {
 
 export const login = async (userInfo) => {
   const response = await axios.post(`${API_ROOT}/v1/users/signin`, userInfo)
+  return response.data
+}
+
+export const createPost = async (postData) => {
+  const response = await axios.post(`${API_ROOT}/v1/posts/create`, postData)
   return response.data
 }
 
