@@ -1,10 +1,19 @@
-import React from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import { Avatar, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { getFeed, getProfile } from '~/apis'
 
 function SuggestBar() {
+  const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
+  const [currentUser, setCurrentUser] = useState(null)
+  useEffect(() => {
+    getProfile(currentUserId).then(
+      user => {
+        setCurrentUser(user)
+      })
+  }, [currentUserId])
+
   return (
     <Box sx={{
       display: { md: 'flex', xs: 'none' },
@@ -30,7 +39,7 @@ function SuggestBar() {
           '& .MuiChip-label': {
             fontWeight: 'medium'
           }
-        }} icon={<Avatar src='https://i.pinimg.com/564x/cf/a7/25/cfa7257bdce3e8cd06367531f911f97c.jpg'/>} label="Scarlett.04" />
+        }} icon={<Avatar src={currentUser?.userPic}/>} label={currentUser?.displayName} />
         <Typography variant='caption' sx={{ cursor: 'pointer', color: '#03a9f4', fontWeight: 'medium' }}>Switch</Typography>
       </Box>
       <Box sx={{

@@ -29,6 +29,26 @@ export const login = async (userInfo) => {
   return response.data
 }
 
+export const getProfile = async (userId) => {
+  const response = await axios.get(`${API_ROOT}/v1/users/profile/${userId}`)
+  return response.data
+}
+
+export const updateProfile = async (updateData, userId) => {
+  const response = await axios.put(`${API_ROOT}/v1/users/update/${userId}`, updateData)
+  return response.data.message
+}
+
+export const followUnfollow = async (userId) => {
+  const response = await axios.put(`${API_ROOT}/v1/users/follow/${userId}`)
+  return response.data.message
+}
+
+export const getFeed = async () => {
+  const response = await axios.get(`${API_ROOT}/v1/users/feed`)
+  return response.data
+}
+
 export const createPost = async (postData) => {
   const response = await axios.post(`${API_ROOT}/v1/posts/create`, postData)
   return response.data

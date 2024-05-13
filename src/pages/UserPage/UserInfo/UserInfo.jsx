@@ -1,16 +1,16 @@
-import React from 'react'
 import UserHeader from '~/components/UserHeader/UserHeader'
-import UserPost from '~/pages/UserPage/UserInfo/UserPost/UserPost'
+import UserPost from '~/components/UserPost'
 import Box from '@mui/material/Box'
 import { mapOrder } from '~/utils/sort'
+import { mockData } from '~/apis/mockData'
 
-function UserInfo({ user }) {
-  user.posts = mapOrder(user?.posts, user?.postOrderIds, user?._id)
-
+function UserInfo({ followUnFollow }) {
+  const user = mockData?.user
+  user.posts = mapOrder(mockData?.user?.posts, mockData?.user?.postOrderIds, mockData?.user?._id)
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', gap: 2 }}>
-      <UserHeader user = {user} />
-      <UserPost user = {user} />
+      <UserHeader followUnFollow={followUnFollow}/>
+      {/* <UserPost user = {mockData?.user} /> */}
     </Box>
   )
 }

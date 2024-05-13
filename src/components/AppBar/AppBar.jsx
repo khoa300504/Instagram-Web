@@ -95,6 +95,7 @@ const VisuallyHiddenInput = styled('input')({
 
 
 function AppBar({ handleCreatePost }) {
+  const user = JSON.parse(localStorage.getItem('user-threads'))
   const setAuthState = useSetRecoilState(authStateAtom)
   const setUser = useSetRecoilState(userAtom)
 
@@ -138,7 +139,7 @@ function AppBar({ handleCreatePost }) {
     }
     handleAfterShare()
     setDescription('')
-    // handleCreatePost(postData)
+    handleCreatePost(postData)
     setOpenModal(!openModal)
   }
 
@@ -209,7 +210,7 @@ function AppBar({ handleCreatePost }) {
         <Box onClick={handleOpenModal} sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
-        <Link as={RouterLink} to={'/profile'}>
+        <Link as={RouterLink} to={`/profile/${user._id}`}>
           <Box sx={boxFuncSx}>
             <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
           </Box>

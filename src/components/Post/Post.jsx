@@ -20,8 +20,10 @@ import PushPinIcon from '@mui/icons-material/PushPin'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
+import { Link as RouterLink } from 'react-router-dom'
+import Link from '@mui/material/Link'
 
-function Post({ post, user, currentFile }) {
+function Post({ post, userPost, currentFile }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -42,12 +44,14 @@ function Post({ post, user, currentFile }) {
   }
 
   return (
-    <Card sx={{ width: '470px', boxShadow: 'none' }}>
+    <Card sx={{ width: '470px', boxShadow: 'none', mb: 5 }}>
       <CardHeader sx={{
         '& .MuiAvatar-img': { cursor: 'pointer' },
-        '& .MuiTypography-body2': { cursor: 'pointer', width: '130px', fontWeight: 'medium' } }}
+        '& .MuiTypography-body2': { cursor: 'pointer', maxWidth: '130px', fontWeight: 'medium' } }}
       avatar={
-        <Avatar alt="Luffy" src={user?.avtImg} />
+        <Link underline="none" as={RouterLink} to={`/profile/${post.userId}`}>
+          <Avatar alt="Luffy" src={userPost?.userPic} />
+        </Link>
       }
       action={
         <Box>
@@ -107,12 +111,16 @@ function Post({ post, user, currentFile }) {
           }
         </Box>
       }
-      title={user.userName}
+      title={
+        <Link underline="none" as={RouterLink} to={`/profile/${post.userId}`} sx={{ color: '#000' }}>
+          {userPost?.displayName}
+        </Link>
+      }
       />
       <CardMedia sx={{ borderRadius: '5px' }}
         component="img"
         height="580px"
-        image={post?.postImg}
+        image={post?.postPic}
         alt="Paella dish"
       />
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -132,8 +140,8 @@ function Post({ post, user, currentFile }) {
         </Box>
       </Box>
       <Box>
-        <Typography color="#7f8c8d">1000 likes</Typography>
-        <Typography variant="body2" color="#000">{post?.title}</Typography>
+        <Typography color="#7f8c8d">{post?.likes?.length} likes</Typography>
+        <Typography variant="body2" color="#000">{post?.description}</Typography>
       </Box>
     </Card>
   )

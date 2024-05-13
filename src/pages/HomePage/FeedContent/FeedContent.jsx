@@ -4,8 +4,46 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Typography from '@mui/material/Typography'
 import Post from '~/components/Post/Post'
 import Stack from '@mui/material/Stack'
+import { useEffect, useState } from 'react'
+import { getFeed, getProfile } from '~/apis'
+import CircularProgress from '@mui/material/CircularProgress'
+import { Link as RouterLink } from 'react-router-dom'
+import Link from '@mui/material/Link'
 
-function FeedContent({ user }) {
+function FeedContent() {
+
+  const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
+  const [currentFollowingId, setCurrentFollowingId] = useState(null)
+  const [followingUserList, setFollowingUserList] = useState([])
+  const [listPost, setListPost] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  useEffect(() => {
+    getProfile(currentUserId).then(
+      user => {
+        // setCurrentUser(user)
+        setCurrentFollowingId(user.following)
+      })
+      .finally(() => setIsLoading(false))
+  }, [currentUserId])
+  useEffect(() => {
+    if (currentFollowingId) {
+      Promise.all(
+        currentFollowingId.map(id => getProfile(id))
+      ).then(users => {
+        setFollowingUserList(users)
+      }).finally(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [currentFollowingId])
+
+  useEffect(() => {
+    if (currentFollowingId) {
+      getFeed().then(feed => {
+        setListPost(feed)
+      })
+    }
+  }, [currentFollowingId])
 
   return (
     <Box sx={{
@@ -14,38 +52,36 @@ function FeedContent({ user }) {
     }}>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <AvatarGroup max={ 5 } sx={{ margin: '20px 0 0 0', gap: 5, justifyContent: 'center', '& .MuiAvatar-root': { borderColor: '#c62828', border: '3px solid #ff9800' } }}>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Avatar alt="Obito" src="https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/ce40366c56de36c44ffdbb0066cdd3cd.jpg?alt=media&token=6af464b1-04af-41b1-86c9-d623532b0aad" />
-            <Typography variant='caption'>Obito</Typography>
-          </Box>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Avatar alt="Luffy" src="https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/b33cf5488bac1c04f86df2304d141bba.jpg?alt=media&token=bc36be07-d92e-442b-ad27-79a02c490a01" />
-            <Typography variant='caption'>Luffy</Typography>
-          </Box>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Avatar alt="Ronaldo" src="https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/5faa55c4c55c4c51a7a357a39da8f7db.jpg?alt=media&token=d70c4ae5-66e0-4038-8e4e-c6d1634de4a8" />
-            <Typography variant='caption'>Ronaldo</Typography>
-          </Box>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Avatar alt="Hacker" src="https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/0da80c00d396748e93fdece8fcadaf74.jpg?alt=media&token=4d4c7a3f-c3cf-4381-9c59-b4b8cda31fc3" />
-            <Typography variant='caption'>Master</Typography>
-          </Box>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Avatar alt="KhoaDev" src="https://firebasestorage.googleapis.com/v0/b/bookingticketapp-4194d.appspot.com/o/c077b0663e82bdd12ce0b0c35327e0d0.jpg?alt=media&token=9f1ec0bc-4c5e-4994-a157-dee9760c2ee7" />
-            <Typography variant='caption'>Khoa</Typography>
-          </Box>
+          {isLoading ? (
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            followingUserList && followingUserList?.map(user => (
+              <Link underline="none" key={user._id} as={RouterLink} to={`/profile/${user._id}`}>
+                <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                  <Avatar alt={user.name} src={user.userPic} />
+                  <Typography sx={{ color: '#2c3e50' }} variant='caption'>KhoaPro</Typography>
+                </Box>
+              </Link>
+            ))
+          )}
         </AvatarGroup>
       </Box>
       <Stack
         sx={{ pt: { sx: '0', sm: 5 }, justifyContent: { xs: 'center', md: 'flex-start' } }}
         direction="column"
         alignItems="center"
-        spacing={5}
       >
         {
-          user?.posts?.map(post =>
-            <Post key={post?._id} post={post} user={user} currentFile={'feed'} />
-          )
+          listPost?.map(post => {
+            const userPost = followingUserList.find(user => user._id === post.userId)
+            if (userPost)
+            {
+              return (
+                <Post key={post._id} post={post} userPost={userPost} currentFile={'feed'}/>
+              )}
+          })
         }
       </Stack>
     </Box>

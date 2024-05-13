@@ -16,7 +16,7 @@ function SignUp() {
   const setAuthState = useSetRecoilState(authStateAtom)
   const setUserState = useSetRecoilState(userAtom)
   const [inputs, setInputs] = useState({
-    displayName: '',
+    fullname: '',
     username: '',
     email: '',
     password: ''
@@ -84,8 +84,8 @@ function SignUp() {
           }
         }}>
           <TextField label="Your Name" variant="outlined" focused
-            onChange={(e) => {setInputs({ ...inputs, displayName: e.target.value })}}
-            value={inputs.displayName}
+            onChange={(e) => {setInputs({ ...inputs, fullname: e.target.value })}}
+            value={inputs.fullname}
           />
           <TextField label="Username" variant="outlined" focused
             onChange={(e) => {setInputs({ ...inputs, username: e.target.value })}}

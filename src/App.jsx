@@ -1,8 +1,9 @@
 import HomePage from '~/pages/HomePage/_id'
 import UserPage from '~/pages/UserPage/_id'
+import AuthPage from '~/pages/AuthPage/_id'
+import UpdateProfile from '~/pages/UpdateProfile/_id'
 import { Route, Routes } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import AuthPage from '~/pages/AuthPage/_id'
 import { useRecoilValue } from 'recoil'
 import userAtom from '~/atoms/userAtom'
 import firebase from 'firebase/compat/app'
@@ -25,7 +26,8 @@ function App() {
       <Routes>
         <Route path='/' element={user ? <HomePage/> : <AuthPage/>} />
         <Route path='/auth' element={!user ? <AuthPage/> : <HomePage/>} />
-        <Route path='/profile' element={<UserPage/>} />
+        <Route path='/profile/:id' element={<UserPage/>} />
+        <Route path='/update/:id' element={<UpdateProfile/>} />
       </Routes>
     </Box>
   )

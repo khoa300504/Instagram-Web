@@ -1,11 +1,13 @@
 import Box from '@mui/material/Box'
-import React from 'react'
 import AppBar from '~/components/AppBar/AppBar'
 import UserInfo from './UserInfo/UserInfo'
 import Divider from '@mui/material/Divider'
-import { mockData } from '~/apis/mockData'
+import { followUnfollow } from '~/apis'
 
 function UserPage() {
+  const followUnFollow = async (userRequestId) => {
+    await followUnfollow(userRequestId)
+  }
   return (
     <Box sx={{
       display: 'flex',
@@ -13,7 +15,7 @@ function UserPage() {
     }}>
       <AppBar/>
       <Divider orientation="vertical" variant="middle" flexItem />
-      <UserInfo user = {mockData?.user}/>
+      <UserInfo followUnFollow={followUnFollow}/>
     </Box>
   )
 }
