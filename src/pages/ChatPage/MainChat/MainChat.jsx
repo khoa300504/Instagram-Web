@@ -97,7 +97,7 @@ function MainChat() {
       }}>
         <InsertPhotoIcon sx={{ ml: 3, cursor: 'pointer' }} />
         <TextField
-          placeholder="Aa"
+          placeholder="function in development process"
           id="input-with-icon-textfield"
           sx={{ borderRadius: '25px', backgroundColor: '#f5f5f5', width: '500px' }}
           InputProps={{
