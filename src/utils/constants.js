@@ -1,4 +1,4 @@
-let apiRoot = ''
+let apiRoot = 'https://instagram-api-vgh8.onrender.com'
 
 if (process.env.BUILD_MODE === 'dev')
 {
