@@ -22,8 +22,10 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link'
+import { likeUnlike } from '~/apis'
 
 function Post({ post, userPost, currentFile }) {
+  const currentUserId = JSON.parse(localStorage.getItem('user-threads'))?._id
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -33,11 +35,15 @@ function Post({ post, userPost, currentFile }) {
     setAnchorEl(null)
   }
 
-  const [like, setLike] = useState(false)
+  const [likeCount, setLikeCount] = useState(post?.likes?.length)
+  const [like, setLike] = useState(post?.likes.includes(currentUserId))
   const [save, setSave] = useState(false)
 
-  const toggleLike = () => {
+  const toggleLike = async () => {
     setLike(!like)
+    if (like) setLikeCount(likeCount-1)
+    if (!like) setLikeCount(likeCount+1)
+    await likeUnlike(post?._id)
   }
   const toggleSave = () => {
     setSave(!save)
@@ -140,7 +146,7 @@ function Post({ post, userPost, currentFile }) {
         </Box>
       </Box>
       <Box>
-        <Typography color="#7f8c8d">{post?.likes?.length} likes</Typography>
+        <Typography color="#7f8c8d">{likeCount} likes</Typography>
         <Typography variant="body2" color="#000">{post?.description}</Typography>
       </Box>
     </Card>

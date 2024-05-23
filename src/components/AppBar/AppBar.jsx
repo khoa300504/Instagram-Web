@@ -36,6 +36,7 @@ import Divider from '@mui/material/Divider'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges'
 import usePreviewImg from '~/hooks/usePreviewImg'
 import { useConfirm } from 'material-ui-confirm'
+import ChatPage from '~/pages/ChatPage/_id'
 
 const chipSx = {
   background: '#fff',
@@ -197,20 +198,22 @@ function AppBar({ handleCreatePost }) {
         <Box sx={boxFuncSx}>
           <Chip icon={<ExploreOutlinedIcon />} label="Explore" sx={chipSx} />
         </Box>
-        <Box className="resIcon" sx={boxFuncSx}>
-          <Chip icon={
-            <Badge color="primary" badgeContent={1}>
-              <SvgIcon className="messIcon" component={MessengerIcon} inheritViewBox/>
-            </Badge>
-          } label="Messages" sx={chipSx} />
-        </Box>
+        <Link as={RouterLink} to={'/message'} underline="none">
+          <Box className="resIcon" sx={boxFuncSx}>
+            <Chip icon={
+              <Badge color="primary" badgeContent={1}>
+                <SvgIcon className="messIcon" component={MessengerIcon} inheritViewBox/>
+              </Badge>
+            } label="Messages" sx={chipSx} />
+          </Box>
+        </Link>
         <Box className="resIcon" sx={boxFuncSx}>
           <Chip icon={<FavoriteBorderIcon />} label="Notification" sx={chipSx} />
         </Box>
         <Box onClick={handleOpenModal} sx={boxFuncSx}>
           <Chip icon={<AddCircleOutlineIcon />} label="Create" sx={chipSx} />
         </Box>
-        <Link as={RouterLink} to={`/profile/${user._id}`}>
+        <Link as={RouterLink} to={`/profile/${user?._id}`}>
           <Box sx={boxFuncSx}>
             <Chip icon={<PersonOutlineIcon />} label="Profile" sx={chipSx} />
           </Box>

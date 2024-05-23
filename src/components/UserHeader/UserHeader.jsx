@@ -14,7 +14,7 @@ function UserHeader({ followUnFollow }) {
   const [currentUserFollowing, setCurrentUserFollowing] = useState(null)
   const [requestUser, setRequestUser] = useState(null)
   const requestUserId = useParams().id
-  const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
+  const currentUserId = JSON.parse(localStorage.getItem('user-threads'))?._id
   useEffect(() => {
     getProfile(requestUserId).then(
       user => {

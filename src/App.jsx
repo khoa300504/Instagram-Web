@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import { useRecoilValue } from 'recoil'
 import userAtom from '~/atoms/userAtom'
 import firebase from 'firebase/compat/app'
+import ChatPage from '~/pages/ChatPage/_id'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC19JiuyfTNXNPYNrOzISAWA8myHil4oao',
@@ -26,7 +27,8 @@ function App() {
       <Routes>
         <Route path='/' element={user ? <HomePage/> : <AuthPage/>} />
         <Route path='/auth' element={!user ? <AuthPage/> : <HomePage/>} />
-        <Route path='/profile/:id' element={<UserPage/>} />
+        <Route path='/profile/:id' element={user ? <UserPage/> : <AuthPage/>} />
+        <Route path='/message/' element={user ? <ChatPage/> : <AuthPage/>} />
         <Route path='/update/:id' element={<UpdateProfile/>} />
       </Routes>
     </Box>

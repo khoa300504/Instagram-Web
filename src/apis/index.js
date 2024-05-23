@@ -54,3 +54,13 @@ export const createPost = async (postData) => {
   return response.data
 }
 
+export const getUserPost = async (userId) => {
+  const response = await axios.get(`${API_ROOT}/v1/posts/userpost/${userId}`)
+  return response.data
+}
+
+export const likeUnlike = async (postId) => {
+  const response = await axios.put(`${API_ROOT}/v1/posts/like/${postId}`)
+  return response.data
+}
+
