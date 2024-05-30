@@ -36,7 +36,6 @@ import Divider from '@mui/material/Divider'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges'
 import usePreviewImg from '~/hooks/usePreviewImg'
 import { useConfirm } from 'material-ui-confirm'
-import ChatPage from '~/pages/ChatPage/_id'
 
 const chipSx = {
   background: '#fff',

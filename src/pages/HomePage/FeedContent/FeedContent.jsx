@@ -11,7 +11,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link'
 
 function FeedContent() {
-
   const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
   const [currentFollowingId, setCurrentFollowingId] = useState(null)
   const [followingUserList, setFollowingUserList] = useState([])
@@ -20,7 +19,6 @@ function FeedContent() {
   useEffect(() => {
     getProfile(currentUserId).then(
       user => {
-        // setCurrentUser(user)
         setCurrentFollowingId(user.following)
       })
       .finally(() => setIsLoading(false))
@@ -73,8 +71,8 @@ function FeedContent() {
         direction="column"
         alignItems="center"
       >
-        {
-          listPost?.map(post => {
+        {listPost.length !== 0
+          ? listPost?.map(post => {
             const userPost = followingUserList.find(user => user._id === post.userId)
             if (userPost)
             {
@@ -82,6 +80,7 @@ function FeedContent() {
                 <Post key={post._id} post={post} userPost={userPost} currentFile={'feed'}/>
               )}
           })
+          : <Typography>Follow someone to get feed</Typography>
         }
       </Stack>
     </Box>

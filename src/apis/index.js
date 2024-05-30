@@ -49,6 +49,16 @@ export const getFeed = async () => {
   return response.data
 }
 
+export const getUsers = async () => {
+  const response = await axios.get(`${API_ROOT}/v1/users/`)
+  return response.data
+}
+
+export const getSuggestUser = async () => {
+  const response = await axios.get(`${API_ROOT}/v1/users/suggest`)
+  return response.data
+}
+
 export const createPost = async (postData) => {
   const response = await axios.post(`${API_ROOT}/v1/posts/create`, postData)
   return response.data
@@ -64,3 +74,12 @@ export const likeUnlike = async (postId) => {
   return response.data
 }
 
+export const sendMessageAPI = async (userId, messageData) => {
+  const response = await axios.post(`${API_ROOT}/v1/messages/send/${userId}`, messageData)
+  return response.data
+}
+
+export const getMessagesAPI = async (userId) => {
+  const response = await axios.get(`${API_ROOT}/v1/messages/${userId}`)
+  return response.data
+}

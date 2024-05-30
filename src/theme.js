@@ -18,6 +18,26 @@ const theme = extendTheme({
           textTransform: 'none'
         }
       }
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '*::-webkit-scrollbar' : {
+            height: '8px',
+            width: '0.4em'
+          },
+          '*::-webkit-scrollbar-track': {
+            background: 'transparent'
+          },
+          '*::-webkit-scrollbar-thumb': {
+            backgroundColor: '#bdc3c7',
+            borderRadius: '8px'
+          },
+          '*::-webkit-scrollbar-thumb:hover': {
+            background: '#95a5a6'
+          }
+        }
+      }
     }
   }
   // ...other properties

@@ -1,13 +1,13 @@
 import HomePage from '~/pages/HomePage/_id'
 import UserPage from '~/pages/UserPage/_id'
 import AuthPage from '~/pages/AuthPage/_id'
+import ChatPage from '~/pages/ChatPage/_id'
 import UpdateProfile from '~/pages/UpdateProfile/_id'
 import { Route, Routes } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import { useRecoilValue } from 'recoil'
 import userAtom from '~/atoms/userAtom'
 import firebase from 'firebase/compat/app'
-import ChatPage from '~/pages/ChatPage/_id'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC19JiuyfTNXNPYNrOzISAWA8myHil4oao',

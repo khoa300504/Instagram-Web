@@ -1,10 +1,13 @@
 import AppBar from '~/components/AppBar/AppBar'
-import Divider from '@mui/material/Divider'
 import Box from '@mui/material/Box'
-import ListChat from './ListChat/ListChat'
 import MainChat from './MainChat/MainChat'
+import ListConversations from './ListConversations/ListConversations'
+import useConversation from '~/zustand/useConversation'
+import WaitingChat from './WaitingChat/WaitingChat'
 
 function ChatPage() {
+  const { selectedConversation } = useConversation()
+
   return (
     <Box sx={{
       display: 'flex',
@@ -20,8 +23,11 @@ function ChatPage() {
         width: '100%',
         border: 1
       }}>
-        <ListChat />
-        <MainChat />
+        <ListConversations />
+        {selectedConversation
+          ? <MainChat/>
+          : <WaitingChat/>
+        }
       </Box>
     </Box>
   )

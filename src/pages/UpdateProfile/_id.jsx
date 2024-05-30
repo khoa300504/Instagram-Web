@@ -11,7 +11,7 @@ import { useConfirm } from 'material-ui-confirm'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
 import { toast } from 'react-toastify'
-import { getProfile, login, updateProfile } from '~/apis/index'
+import { getProfile, updateProfile } from '~/apis/index'
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link'
 import { useParams } from 'react-router-dom'
@@ -89,7 +89,7 @@ function UpdateProfile() {
       }
     }
   }
-  const handleChangeInfo = () => {
+  const handleChangeInfo = async () => {
     const updateData = { ...inputs }
     for (let key in updateData) {
       if (updateData[key] === null ||updateData[key] === '' || ( key !== 'fullname' && key !== 'email' && key !== 'displayName' && key !== 'bio')) {
@@ -106,8 +106,8 @@ function UpdateProfile() {
       confirmationButtonProps: { color: 'success' }
     })
       .then(() => {
-        const result = updateProfile(updateData, currentUserId)
-        toast.success(result.message)
+        toast.success('Update successfully')
+        updateProfile(updateData, currentUserId)
       })
       .catch(() => {})
   }
