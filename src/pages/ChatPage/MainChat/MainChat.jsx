@@ -14,14 +14,19 @@ import { useEffect, useRef, useState } from 'react'
 import Message from './Message/Message'
 import useGetMessages from '~/hooks/useGetMessages'
 import useSendMessage from '~/hooks/useSendMessage'
+import useListenMessages from '~/hooks/useListenMessages'
+import sendMessageSound from '~/assets/sounds/sendMessageSound.mp3'
 
 function MainChat() {
   const { selectedConversation, setMessages } = useConversation()
   const { messages } = useGetMessages()
+  useListenMessages()
   const { sendMessage } = useSendMessage()
   const [message, setMessage] = useState('')
   const handleSendMessage = async () => {
     await sendMessage(message)
+    const sound = new Audio(sendMessageSound)
+    sound.play()
     setMessage('')
   }
   const lastMessageRef = useRef()

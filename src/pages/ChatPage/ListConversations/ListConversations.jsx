@@ -40,7 +40,7 @@ function ListConversations() {
           }}
         />
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflow: 'auto', height: '285px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'auto', height: '285px', pt: 1 }}>
         {
           loading
             ? <CircularProgress/>

@@ -16,6 +16,8 @@ function FeedContent() {
   const [followingUserList, setFollowingUserList] = useState([])
   const [listPost, setListPost] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+
+  //Lay thong tin nguoi dung hien tai
   useEffect(() => {
     getProfile(currentUserId).then(
       user => {
@@ -23,6 +25,8 @@ function FeedContent() {
       })
       .finally(() => setIsLoading(false))
   }, [currentUserId])
+
+  //lay profile cua following user
   useEffect(() => {
     if (currentFollowingId) {
       Promise.all(
@@ -35,6 +39,7 @@ function FeedContent() {
     }
   }, [currentFollowingId])
 
+  //lay bai viet cua nguoi do
   useEffect(() => {
     if (currentFollowingId) {
       getFeed().then(feed => {
