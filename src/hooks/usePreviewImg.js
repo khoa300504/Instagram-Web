@@ -30,7 +30,7 @@ function usePreviewImg() {
     setPostPic(null)
   }
 
-  return { handleImgChange, handleAfterShare, postPic }
+  return { handleImgChange, handleAfterShare, postPic, setPostPic }
 }
 
 export default usePreviewImg

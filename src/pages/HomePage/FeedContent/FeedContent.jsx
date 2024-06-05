@@ -9,44 +9,45 @@ import { getFeed, getProfile } from '~/apis'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Link as RouterLink } from 'react-router-dom'
 import Link from '@mui/material/Link'
+import Skeleton from '@mui/material/Skeleton'
 
 function FeedContent() {
   const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
-  const [currentFollowingId, setCurrentFollowingId] = useState(null)
-  const [followingUserList, setFollowingUserList] = useState([])
-  const [listPost, setListPost] = useState([])
+  const [currentFollowingIds, setCurrentFollowingIds] = useState(null)
+  const [followingUsers, setFollowingUsers] = useState([])
+  const [posts, setPosts] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   //Lay thong tin nguoi dung hien tai
   useEffect(() => {
     getProfile(currentUserId).then(
       user => {
-        setCurrentFollowingId(user.following)
+        setCurrentFollowingIds(user.following)
       })
-      .finally(() => setIsLoading(false))
+      .finally(() => setIsLoading(true))
   }, [currentUserId])
 
   //lay profile cua following user
   useEffect(() => {
-    if (currentFollowingId) {
+    if (currentFollowingIds) {
       Promise.all(
-        currentFollowingId.map(id => getProfile(id))
+        currentFollowingIds.map(id => getProfile(id))
       ).then(users => {
-        setFollowingUserList(users)
+        setFollowingUsers(users)
       }).finally(() => {
-        setIsLoading(false)
+        setIsLoading(true)
       })
     }
-  }, [currentFollowingId])
+  }, [currentFollowingIds])
 
   //lay bai viet cua nguoi do
   useEffect(() => {
-    if (currentFollowingId) {
+    if (currentFollowingIds) {
       getFeed().then(feed => {
-        setListPost(feed)
-      })
+        setPosts(feed)
+      }).finally(() => setIsLoading(false))
     }
-  }, [currentFollowingId])
+  }, [currentFollowingIds])
 
   return (
     <Box sx={{
@@ -60,7 +61,7 @@ function FeedContent() {
               <CircularProgress />
             </Box>
           ) : (
-            followingUserList && followingUserList?.map(user => (
+            followingUsers && followingUsers?.map(user => (
               <Link underline="none" key={user._id} as={RouterLink} to={`/profile/${user._id}`}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                   <Avatar alt={user.name} src={user.userPic} />
@@ -76,16 +77,24 @@ function FeedContent() {
         direction="column"
         alignItems="center"
       >
-        {listPost.length !== 0
-          ? listPost?.map(post => {
-            const userPost = followingUserList.find(user => user._id === post.userId)
+        {!isLoading && posts.length === 0 && <Typography>Follow someone to get feed</Typography>}
+        {isLoading &&
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Skeleton variant="circular">
+              <Avatar />
+            </Skeleton>
+            <Skeleton variant="rectangular" sx={{ mb: 2, mt: 2 }} width='70%' height={60} />
+            <Skeleton variant="rounded" width='70%' height={60} />
+          </Box>}
+        { posts &&
+          posts?.map(post => {
+            const userPost = followingUsers.find(user => user._id === post.userId)
             if (userPost)
             {
               return (
                 <Post key={post._id} post={post} userPost={userPost} currentFile={'feed'}/>
               )}
           })
-          : <Typography>Follow someone to get feed</Typography>
         }
       </Stack>
     </Box>

@@ -8,7 +8,7 @@ import Link from '@mui/material/Link'
 
 function SuggestBar() {
   const currentUserId = JSON.parse(localStorage.getItem('user-threads'))._id
-  const [listSuggestUser, setListSuggestUser] = useState([])
+  const [suggestUsers, setSuggestUsers] = useState([])
   const [currentUser, setCurrentUser] = useState(null)
   useEffect(() => {
     getProfile(currentUserId).then(
@@ -19,7 +19,7 @@ function SuggestBar() {
   useEffect(() => {
     getSuggestUser().then(
       user => {
-        setListSuggestUser(user)
+        setSuggestUsers(user)
       }
     )
   }, [])
@@ -67,7 +67,7 @@ function SuggestBar() {
         <Typography sx={{ opacity: '0.7' }}>Suggested Users</Typography>
         <Typography variant='caption' sx={{ cursor: 'pointer', color: '#03a9f4', fontWeight: 'medium' }}>See all</Typography>
       </Box>
-      {listSuggestUser.map(user => (
+      {suggestUsers.map(user => (
         <Box
           key={user._id}
           sx={{

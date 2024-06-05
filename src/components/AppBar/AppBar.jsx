@@ -112,25 +112,30 @@ function AppBar({ handleCreatePost }) {
   const [openModal, setOpenModal] = useState(false)
   const handleOpenModal = () => setOpenModal(!openModal)
   const handleCloseModal = () => {
-    confirm({
-      title: 'Discard post?',
-      // eslint-disable-next-line quotes
-      description: "If you leave, your edits won't be saved.",
-      confirmationText: 'Discard',
+    if (postPic || description)
+    {
+      confirm({
+        title: 'Discard post?',
+        // eslint-disable-next-line quotes
+        description: "If you leave, your edits won't be saved.",
+        confirmationText: 'Discard',
 
-      allowClose: false,
-      dialogProps: { maxWidth: 'xs' },
-      cancellationButtonProps: { color: 'inherit' },
-      confirmationButtonProps: { color: 'error' }
-    })
-      .then(() => {
+        allowClose: false,
+        dialogProps: { maxWidth: 'xs' },
+        cancellationButtonProps: { color: 'inherit' },
+        confirmationButtonProps: { color: 'error' }
+      }).then(() => {
         setOpenModal(!openModal)
+      }).finally(() => {
+        setPostPic(null)
+        setDescription(null)
       })
-      .catch(() => {})
+    }
+    else setOpenModal(!openModal)
   }
   const [description, setDescription] = useState('')
   const imgRef = useRef(null)
-  const { handleImgChange, handleAfterShare, postPic } = usePreviewImg()
+  const { handleImgChange, handleAfterShare, postPic, setPostPic } = usePreviewImg()
 
   const handleShare = () => {
     const postData = {
@@ -257,6 +262,7 @@ function AppBar({ handleCreatePost }) {
           </Menu>
         </Box>
       </Box>
+
       {/* Modal Create Post */}
       <Box>
         <Modal
@@ -266,8 +272,9 @@ function AppBar({ handleCreatePost }) {
           aria-describedby="modal-modal-description"
         >
           <Box sx={ModalSx}>
+            {/* Tuong tac */}
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <ArrowBackIcon sx={{ cursor: 'pointer' }}/>
+              <ArrowBackIcon onClick={handleCloseModal} sx={{ cursor: 'pointer' }}/>
               <Typography sx={{ fontWeight: 'bold' }}>Create new post</Typography>
               <Typography sx={{
                 cursor: 'pointer',
@@ -278,6 +285,7 @@ function AppBar({ handleCreatePost }) {
               onClick={handleShare}
               >Share</Typography>
             </Box>
+            {/* Noi dung bai dang */}
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box sx={{
                 width: '65%',
